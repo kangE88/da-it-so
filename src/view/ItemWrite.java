@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -25,6 +26,7 @@ import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 
 import delegator.Delegator;
+import dto.AbilityBbs;
 import dto.Category;
 import dto.ItemBbs;
 import service.ItemBbsService;
@@ -40,11 +42,8 @@ public class ItemWrite extends JFrame implements ActionListener {
 
 	JPanel category;
 
-	// String iconImgUrl = "C:\\icon\\";
-	String iconImgUrl = "/Users/parker/Desktop/img/icon/";
 	private JFileChooser jfc = new JFileChooser();
 	private String filename1, filename2, filename3, filename4;
-	private JLabel SidecategoryPn[][];
 
 	List<Category> m_categoryList = null;
 
@@ -56,10 +55,10 @@ public class ItemWrite extends JFrame implements ActionListener {
 
 		JPanel headerPn, sidePn, logoPn, catePn, writePn;
 
-		// header
+		// headerlogo
+		BufferedImage headerImg = delegator.getImage("icon/headerlogo.png");
+		ImageIcon headerimage = new ImageIcon(headerImg);
 		headerLogo = new JPanel() {
-			ImageIcon headerimage = new ImageIcon(iconImgUrl + "headerlogo.png");
-
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
 				g.drawImage(headerimage.getImage(), 0, 0, null);
@@ -69,12 +68,12 @@ public class ItemWrite extends JFrame implements ActionListener {
 		};
 
 		// logo
+		BufferedImage logoImg = delegator.getImage("icon/logo.png");
+		ImageIcon logoIcon = new ImageIcon(logoImg);
 		logoPn = new JPanel() {
-			ImageIcon image = new ImageIcon(iconImgUrl + "logo.png");
-
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
-				g.drawImage(image.getImage(), 0, 0, null);
+				g.drawImage(logoIcon.getImage(), 0, 0, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
@@ -86,9 +85,7 @@ public class ItemWrite extends JFrame implements ActionListener {
 		cn.setBounds(0, 0, 1350, 750);
 		cn.setBackground(Color.white);
 
-		setBounds(0, 0, 1350, 750);
-		setLayout(null);
-		setVisible(true);
+	
 
 		// Header
 		Color commonRedColor = new Color(218, 0, 0);
@@ -120,6 +117,7 @@ public class ItemWrite extends JFrame implements ActionListener {
 			loginBtn.setBackground(commonRedColor);
 			loginBtn.setForeground(Color.white);
 			loginBtn.addActionListener(this);
+			loginBtn.setContentAreaFilled(false);
 			headerPn.add(loginBtn);
 
 			// SignBtn
@@ -131,6 +129,7 @@ public class ItemWrite extends JFrame implements ActionListener {
 			signupBtn.setBackground(commonRedColor);
 			signupBtn.setForeground(Color.white);
 			signupBtn.addActionListener(this);
+			signupBtn.setContentAreaFilled(false);
 			headerPn.add(signupBtn);
 		} else {
 			// logoutBtn
@@ -142,6 +141,7 @@ public class ItemWrite extends JFrame implements ActionListener {
 			logoutBtn.setBackground(commonRedColor);
 			logoutBtn.setForeground(Color.white);
 			logoutBtn.addActionListener(this);
+			logoutBtn.setContentAreaFilled(false);
 			headerPn.add(logoutBtn);
 		}
 
@@ -163,7 +163,9 @@ public class ItemWrite extends JFrame implements ActionListener {
 		sidePn.add(searchTextF);
 
 		// searchBtn
-		searchBtn = new JButton(new ImageIcon(iconImgUrl + "search.png"));
+		BufferedImage searchImg = delegator.getImage("icon/search.png");
+		ImageIcon searchIcon = new ImageIcon(searchImg);
+		searchBtn = new JButton(searchIcon);
 		searchBtn.setBounds(300, 160, 40, 40);
 		searchBtn.setOpaque(false); // 투명하게
 		searchBtn.setContentAreaFilled(false);// 내용영역 채우기x
@@ -177,11 +179,12 @@ public class ItemWrite extends JFrame implements ActionListener {
 		catePn.setBackground(Color.WHITE);
 
 		for (int i = 0; i < categoryList.size(); i++) {
-			ImageIcon categoryImage = new ImageIcon(iconImgUrl + categoryList.get(i).getTitle() + ".png");
+			BufferedImage categoryImage = delegator.getImage("item/" + categoryList.get(i).getTitle() + ".png");
+			ImageIcon categoryIcon = new ImageIcon(categoryImage);
 
 			JPanel category = new JPanel() {
 				public void paintComponent(Graphics g) {
-					g.drawImage(categoryImage.getImage(), 0, 0, null);
+					g.drawImage(categoryIcon.getImage(), 0, 0, null);
 					setOpaque(false);
 					super.paintComponents(g);
 				}
@@ -217,7 +220,7 @@ public class ItemWrite extends JFrame implements ActionListener {
 		String category[] = new String[categoryList.size()];
 
 		for (int i = 0; i < category.length; i++) {
-			category[i] = categoryList.get(i).getTitle();
+			category[i] = categoryList.get(i).getDescription();
 		}
 
 		cateCombo = new JComboBox(category);
@@ -290,35 +293,40 @@ public class ItemWrite extends JFrame implements ActionListener {
 		img4TextF.setBounds(210, 310, 300, 30);
 		writePn.add(img4TextF);
 
-		imgAdd3 = new JButton("이미지 4");
-		imgAdd3.setBounds(520, 310, 100, 30);
-		imgAdd3.addActionListener(this);
-		writePn.add(imgAdd3);
+		imgAdd4 = new JButton("이미지 4");
+		imgAdd4.setBounds(520, 310, 100, 30);
+		imgAdd4.addActionListener(this);
+		writePn.add(imgAdd4);
 
 		// keywLb
 		keywLb = new JLabel("키워드");
 		keywLb.setBounds(100, 350, 100, 30);
 		writePn.add(keywLb);
 
+		JLabel infoLabel = new JLabel("검색 가능한 키워드를 등록해주세요.");
+		infoLabel.setBounds(220, 380, 300, 20);
+		writePn.add(infoLabel);
+
 		keywordTextF = new JTextField();
 		keywordTextF.setBounds(210, 350, 300, 30);
+		keywordTextF.setText("ex) #중고 #컴퓨터 #노트");
 		writePn.add(keywordTextF);
 
 		// content
 		contentLb = new JLabel("내용");
-		contentLb.setBounds(100, 390, 100, 30);
+		contentLb.setBounds(100, 410, 100, 30);
 		writePn.add(contentLb);
 
 		contentTextPn = new JTextPane();
-		contentTextPn.setBounds(210, 390, 410, 150);
+		contentTextPn.setBounds(210, 410, 410, 150);
 		writePn.add(contentTextPn);
 
 		priceLb = new JLabel("가격");
-		priceLb.setBounds(100, 550, 100, 30);
+		priceLb.setBounds(100, 570, 100, 30);
 		writePn.add(priceLb);
 
 		priceTextF = new JTextField();
-		priceTextF.setBounds(210, 550, 300, 30);
+		priceTextF.setBounds(210, 570, 300, 30);
 		writePn.add(priceTextF);
 
 		writeBtn = new JButton("등록");
@@ -329,14 +337,28 @@ public class ItemWrite extends JFrame implements ActionListener {
 		add(sidePn);
 		add(headerPn);
 		add(writePn);
+		
+		setBounds(0, 0, 1350, 750);
+		setLayout(null);
+		setVisible(true);
 
+	}
+	
+	
+	private boolean checkPrice() {
+		String _price = priceTextF.getText();
+
+		for (int i = 0; i < _price.length(); i++) {
+			char ch = _price.charAt(i);
+			if ((int) ch < 47 || (int) ch > 58) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JButton btn = (JButton) e.getSource();
-
-		System.out.println("==>" + e.getActionCommand());
 		Delegator delegator = Delegator.getInstance();
 
 		Object obj = e.getSource();
@@ -344,22 +366,29 @@ public class ItemWrite extends JFrame implements ActionListener {
 		if (obj == listBtn) {
 			delegator.itemBbsController.allItemList();
 			this.dispose();
-		}
-
-		if (obj == loginBtn) {
+		} else if (obj == loginBtn) {
 			delegator.personController.Login();
 			this.dispose();
 		} else if (obj == signupBtn) {
 			delegator.personController.SignUp();
 			this.dispose();
-		} else if (obj == logoutBtn) {
-			delegator.personController.Logout();
+		} else if(obj == logoutBtn) {
+			int result =delegator.personController.Logout();
+			if (result == 0) {
+				this.dispose();
+			}
+		} else if(obj == searchBtn) {
+			String searchWord = searchTextF.getText();
+			delegator.itemBbsController.searchList(searchWord);
 			this.dispose();
-		} else if (obj == imgAdd1) {
+		}
+
+		if (obj == imgAdd1) {
 			if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 				// showopendialog 열기 창을 열고 확인 버튼을 눌렀는지 확인
 				img1TextF.setText(jfc.getSelectedFile().toString());
 				filename1 = jfc.getSelectedFile().getName();
+				System.out.println(filename1);
 			}
 		}
 		if (obj == imgAdd2) {
@@ -383,62 +412,64 @@ public class ItemWrite extends JFrame implements ActionListener {
 				filename4 = jfc.getSelectedFile().getName();
 			}
 		}
+
 		if (obj == writeBtn) {
-			if (!img1TextF.getText().isEmpty()) {
-				filesend fs = new filesend(img1TextF.getText());
-			}
-			if (!img2TextF.getText().isEmpty()) {
-				filesend fs = new filesend(img2TextF.getText());
-			}
-			if (!img3TextF.getText().isEmpty()) {
-				filesend fs = new filesend(img3TextF.getText());
-			}
-			if (!img4TextF.getText().isEmpty()) {
-				filesend fs = new filesend(img4TextF.getText());
-			}
-
-			ItemBbs itemDto = new ItemBbs();
-
-			String id = delegator.getCurrent_user().getId();
-
-			// numberformat
-			String str = priceTextF.getText();
-			for (int i = 0; i < str.length(); i++) {
-				char c = str.charAt(i);
-				if (c < 48 || c > 57) {// 숫자가 아닌 경우
-					JOptionPane.showMessageDialog(null, "숫자만 입력가능합니다.");
-					break;
+			if(checkPrice() && !priceTextF.getText().equals("")) {
+				if (!img1TextF.getText().isEmpty()) {
+					filesend fs = new filesend(img1TextF.getText(), delegator.getCurrent_user().getId()+"-fileSecretKey0917-"+filename1);
 				}
-			}
-
-			int categoryIndex = cateCombo.getSelectedIndex();
-			itemDto.setCategory_id(this.m_categoryList.get(categoryIndex).getSeq());
-			itemDto.setTitle(titleTextF.getText());
-			itemDto.setImgurl1(img1TextF.getText());
-			itemDto.setImgurl2(img2TextF.getText());
-			itemDto.setImgurl3(img3TextF.getText());
-			itemDto.setImgurl4(img4TextF.getText());
-			itemDto.setKeyword(keywordTextF.getText());
-			itemDto.setPrice(Integer.parseInt(priceTextF.getText()));
-			itemDto.setContent(contentTextPn.getText());
-			itemDto.setUser_id(id);
-
-			/* delegator 에 현재 로그인된 유저 정보를 받아오도록 수정 */
-			ItemBbsService itemservice = new ItemBbsService();
-
-			boolean addItemCK = itemservice.addItem(itemDto);
-			boolean priceCK = false;
-			System.out.println("addItemCK" + addItemCK);
-			if (addItemCK) {
-				delegator.itemBbsController.itemDetail(itemDto);
-				this.dispose();
-			} else if (priceCK) {
-				JOptionPane.showMessageDialog(null, "금액은 숫자만 입력 가능합니다.");
-				return;
+				if (!img2TextF.getText().isEmpty()) {
+					filesend fs = new filesend(img2TextF.getText(), delegator.getCurrent_user().getId()+"-fileSecretKey0917-"+filename2);
+				}
+				if (!img3TextF.getText().isEmpty()) {
+					filesend fs = new filesend(img3TextF.getText(), delegator.getCurrent_user().getId()+"-fileSecretKey0917-"+filename3);
+				}
+				if (!img4TextF.getText().isEmpty()) {
+					filesend fs = new filesend(img4TextF.getText(), delegator.getCurrent_user().getId()+"-fileSecretKey0917-"+filename4);
+				}
+				
+				ItemBbs itemDto = new ItemBbs();
+				
+				String id = delegator.getCurrent_user().getId();
+				
+				int categoryIndex = cateCombo.getSelectedIndex();
+				itemDto.setCategory_id(this.m_categoryList.get(categoryIndex).getSeq());
+				itemDto.setTitle(titleTextF.getText());
+				
+				itemDto.setImgurl1("userImg/"+delegator.getCurrent_user().getId()+"/"+filename1);
+				itemDto.setImgurl2("userImg/"+delegator.getCurrent_user().getId()+"/"+filename2);
+				itemDto.setImgurl3("userImg/"+delegator.getCurrent_user().getId()+"/"+filename3);
+				itemDto.setImgurl4("userImg/"+delegator.getCurrent_user().getId()+"/"+filename4);
+				
+				if (keywordTextF.getText().equals("ex) #중고 #컴퓨터 #노트")) {
+					itemDto.setKeyword("");
+				} else {
+					itemDto.setKeyword(keywordTextF.getText());
+				}
+				
+				itemDto.setPrice(Integer.parseInt(priceTextF.getText()));
+				itemDto.setContent(contentTextPn.getText());
+				itemDto.setUser_id(id);
+				
+				
+				if(itemDto.getTitle().equals("")) {
+					JOptionPane.showMessageDialog(null, "제목을 입력해주세요.");
+				}else if(itemDto.getContent().equals("")){
+					JOptionPane.showMessageDialog(null, "내용을 입력해주세요.");
+				}else {
+					boolean result = delegator.itemBbsController.insert(itemDto);
+					if(result) {
+						JOptionPane.showMessageDialog(null, "게시글이 등록 됐습니다.");
+						delegator.itemBbsController.itemDetail(itemDto);
+						this.dispose();
+					}else {
+						JOptionPane.showMessageDialog(null, "게시글이 등록할 수 없습니다.");
+					}
+				}
 			} else {
-				JOptionPane.showMessageDialog(null, "공백이있습니다.");
-				return;
+				JOptionPane.showMessageDialog(null, "금액은 숫자만 입력 가능합니다.");
 			}
+			
 
 		}
 

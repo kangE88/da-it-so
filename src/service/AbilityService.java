@@ -42,9 +42,9 @@ public class AbilityService implements AbilityServiceImpl {
 	}
 
 	@Override
-	public boolean CompleteAbilityBbsByAdmin(AbilityBbs ability) {
+	public boolean CompleteAbilityBbs(AbilityBbs ability) {
 		// TODO Auto-generated method stub
-		return abilityDao.CompleteAbilityBbsByAdmin(ability);
+		return abilityDao.CompleteAbilityBbs(ability);
 	}
 
 	@Override
@@ -59,4 +59,17 @@ public class AbilityService implements AbilityServiceImpl {
 		// TODO Auto-generated method stub
 		return abilityDao.AdminSearch(search);
 	}
+
+	@Override
+	public boolean DeleteAbilityBbs(AbilityBbs abilityDto) {
+		// TODO Auto-generated method stub
+		return abilityDao.DeleteAbilityBbs(abilityDto);
+	}
+
+	@Override
+	public AbilityBbs getAbilityByTilteAndContent(AbilityBbs abilityDto) {
+		// TODO Auto-generated method stub
+		return abilityDao.getAbilityByTilteAndContent(abilityDto);
+	}
+	
 }

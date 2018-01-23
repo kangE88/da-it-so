@@ -9,13 +9,12 @@ import java.util.List;
 
 import db.DBClose;
 import db.DBConnection;
+import db.MySqlConnection;
 import db.OracleConnection;
+import delegator.Delegator;
 import dto.Person;
 
 public class PersonDao implements PersonDaoImpl {
-
-//	DBConnection DBConnector = new MySqlConnection();
-	DBConnection DBConnector = new OracleConnection();
 
 	/*
 	 * 2018-01-04 init by Parker.
@@ -27,7 +26,7 @@ public class PersonDao implements PersonDaoImpl {
 
 		String sql = " select * from person where id='" + id + "' and password='" + pwds + "'";
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement pstmt = null;
 
 		ResultSet rs = null;
@@ -62,7 +61,7 @@ public class PersonDao implements PersonDaoImpl {
 
 		Person person = null;
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement ptmt = null;
 		
 		System.out.println(">>>	PersonDao .getPersonById() sql : " + sql);
@@ -95,7 +94,7 @@ public class PersonDao implements PersonDaoImpl {
 
 		String sql;
 
-		if (DBConnector.getClass().getName().equals("db.MySqlConnection")) {
+		if (Delegator.getInstance().DBConnector.getClass().getName().equals("db.MySqlConnection")) {
 			sql = " insert into person(id, pwd, phone, nick, create_at) "
 					+ " values('"+person.getId()+"', '"+pwds+"', '"+person.getPhone()+"', '"+person.getNick()+"', now()) ";
 		} else {
@@ -104,7 +103,7 @@ public class PersonDao implements PersonDaoImpl {
 		}
 
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement pstmt = null;
 
 		ResultSet rs = null;
@@ -131,7 +130,7 @@ public class PersonDao implements PersonDaoImpl {
 
 		boolean result = true;
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement pstmt = null;
 
 		ResultSet rs = null;
@@ -162,7 +161,7 @@ public class PersonDao implements PersonDaoImpl {
 
 		String sql = " select * from person ";
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement ptmt = null;
 
 		ResultSet rs = null;
@@ -197,7 +196,7 @@ public class PersonDao implements PersonDaoImpl {
 		// TODO Auto-generated method stub
 		String sql = " select * from person where id like '%"+search+"%' or nick like '%"+search+"%' or phone like '%"+search+"%'";
 
-		Connection conn = DBConnector.makeConnection();
+		Connection conn = Delegator.getInstance().DBConnector.makeConnection();
 		PreparedStatement ptmt = null;
 
 		ResultSet rs = null;

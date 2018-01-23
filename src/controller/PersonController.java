@@ -19,14 +19,19 @@ public class PersonController {
 	public void SignUp() {
 		new SignUp();
 	}
-	
-	public void Logout() {
+
+	//--------------------------------------------------------수
+	public int Logout() {
 		Delegator delegator = Delegator.getInstance();
-		delegator.setCurrent_user(null);
+		int result = JOptionPane.showConfirmDialog(null,"로그아웃 하시겠습니까 ?","",  JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (result == JOptionPane.YES_OPTION) {
+			delegator.setCurrent_user(null);
+			JOptionPane.showMessageDialog(null, "로그아웃 되었습니다. ");			
+			delegator.mainController.Main();
+		}
 		
-		JOptionPane.showMessageDialog(null, "Sign out successfully");
-		
-		delegator.mainController.Main();
+		return result;
+
 	}
 
 	/*

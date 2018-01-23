@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -33,9 +34,6 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 	private JButton loginBtn, logoutBtn, signupBtn, searchBtn, talkBtn, chatBtn;
 	private JButton itemListBtn, userListBtn, abilityListBtn;
 	private JTextField searchTextF;
-
-//	String iconImgUrl = "/Users/parker/Desktop/img/icon/";
-	String iconImgUrl = "E:\\icon/";
 	
 	int itemHeight = 60;
 	
@@ -73,8 +71,11 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		scrollPane.setBounds(400, 60, 1100, 900);
 		scrollPane.setBackground(Color.black);
 
+		Delegator delegator = Delegator.getInstance();
+		
 		// headerlogo
-		ImageIcon headerimage = new ImageIcon(iconImgUrl + "headerlogo.png");
+		BufferedImage headerImg = delegator.getImage("icon/headerlogo.png");
+		ImageIcon headerimage = new ImageIcon(headerImg);
 		headerLogo = new JPanel() {
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
@@ -90,11 +91,12 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 				// TODO Auto-generated method stub
 				Delegator delegator = Delegator.getInstance();
 				delegator.mainController.Main();
+				dispose();
 			}
+
 		});
 		headerPn.add(headerLogo);
-		
-		Delegator delegator = Delegator.getInstance();
+	
 		
 		if(delegator.getCurrent_user()==null) {
 			// loginBtn
@@ -127,6 +129,7 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 			logoutBtn.setFont(new Font("로그아웃", Font.BOLD, 12));
 			logoutBtn.setBackground(commonRedColor);
 			logoutBtn.setForeground(Color.white);
+			logoutBtn.addActionListener(this);
 			headerPn.add(logoutBtn);			
 		}
 
@@ -137,18 +140,18 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		sidePn.setBounds(0, 60, 400, 1000);
 		sidePn.setLayout(null);
 		sidePn.setBackground(sideC);
-
-		ImageIcon image = new ImageIcon(iconImgUrl + "logo.png");
+		
+		BufferedImage logoImg = delegator.getImage("icon/logo.png");
+		ImageIcon logoIcon = new ImageIcon(logoImg);
 		logoPn = new JPanel() {
-			// 사이즈맞게 배경삽임
+
 			public void paintComponent(Graphics g) {
-				g.drawImage(image.getImage(), 0, 0, null);
+				g.drawImage(logoIcon.getImage(), 0, 0, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
 		logoPn.setBounds(40, 30, 300, 66);
-
 		sidePn.add(logoPn);
 
 		// SearchText
@@ -158,7 +161,9 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		sidePn.add(searchTextF);
 
 		// searchBtn
-		searchBtn = new JButton(new ImageIcon(iconImgUrl + "search.png"));
+		BufferedImage searchImg = delegator.getImage("icon/search.png");
+		ImageIcon searchIcon = new ImageIcon(searchImg);
+		searchBtn = new JButton(searchIcon);
 		searchBtn.setBounds(300, 160, 40, 40);
 		searchBtn.setOpaque(false); // 투명하게
 		searchBtn.addActionListener((ActionEvent e)->{
@@ -202,15 +207,16 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		// main view
 		JPanel main = new JPanel();
 		main.setLayout(new GridLayout(5,  1));
-		main.setBounds(400, 60, 1280, 330);
+		main.setBounds(380, 60, 1280, 330);
 		
 		JPanel userIDPanel = new JPanel();
 		userIDPanel.setLayout(null);
 		
-		JLabel uesrID = new JLabel();
-		uesrID.setText("ID");
-		uesrID.setBounds(100, 50, 200, 20);
-		userIDPanel.add(uesrID);
+		JLabel userID = new JLabel();
+		userID.setText("ID");
+		userID.setBounds(100, 50, 200, 30);
+		userID.setFont(new Font("font", Font.BOLD, 15));
+		userIDPanel.add(userID);
 		
 		JLabel userID2 = new JLabel();
 		userID2.setText(person.getId());
@@ -225,7 +231,8 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		
 		JLabel uesrPhone = new JLabel();
 		uesrPhone.setText("Phone");
-		uesrPhone.setBounds(100, 50, 200, 20);
+		uesrPhone.setBounds(100, 50, 200, 30);
+		uesrPhone.setFont(new Font("font", Font.BOLD, 15));
 		userPhonePanel.add(uesrPhone);
 		
 		JLabel uesrPhone2 = new JLabel();
@@ -242,7 +249,8 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		
 		JLabel userNick = new JLabel();
 		userNick.setText("nickname");
-		userNick.setBounds(100, 50, 200, 20);
+		userNick.setBounds(100, 50, 200, 30);
+		userNick.setFont(new Font("font", Font.BOLD, 15));
 		userNickPanel.add(userNick);
 		
 		JLabel userNick2 = new JLabel();
@@ -260,7 +268,8 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		
 		JLabel userCreated = new JLabel();
 		userCreated.setText("Join date");
-		userCreated.setBounds(100, 50, 200, 20);
+		userCreated.setBounds(100, 50, 200, 30);
+		userCreated.setFont(new Font("font", Font.BOLD, 15));
 		userCreatedPanel.add(userCreated);
 		
 		JLabel userCreated2 = new JLabel();
@@ -307,8 +316,8 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		alabel.setText("인력글 작성 현황");
 		alabel.setBounds(400, 390, 475, 20);
 		alabel.setFont(new Font("font", Font.BOLD, 17));
-		alabel.setBackground(commonRedColor);
-		alabel.setForeground(Color.white);
+//		alabel.setBackground(commonRedColor);
+//		alabel.setForeground(Color.white);
 		contentPane.add(alabel);
 		
 		JScrollPane aScrPane = new JScrollPane(atable);
@@ -373,17 +382,26 @@ public class AdminUserDetail extends JFrame implements ActionListener {
 		Delegator delegator = Delegator.getInstance();
 		Object obj = e.getSource();
 		
-		if(obj == itemListBtn) {
+		if (obj == itemListBtn) {
 			delegator.adminController.ItemList();
 			this.dispose();
-		}else if(obj == abilityListBtn) {
+		} else if (obj == abilityListBtn) {
 			delegator.adminController.AbilityList();
 			this.dispose();
-		}else if(obj == userListBtn) {
+		} else if (obj == userListBtn) {
 			delegator.adminController.UserList();
 			this.dispose();
-		} else if(obj == chatBtn) {
+		} else if (obj == chatBtn) {
 			delegator.roomController.RoomList();
+		} else if(obj == loginBtn) {
+			delegator.personController.Login();
+			this.dispose();
+		} else if(obj == logoutBtn) {
+			delegator.personController.Logout();
+			this.dispose();
+		} else if(obj == signupBtn) {
+			delegator.personController.SignUp();
+			this.dispose();
 		}
 	}
 }

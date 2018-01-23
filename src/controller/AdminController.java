@@ -86,7 +86,7 @@ public class AdminController {
 	}
 	
 	public void CompleteItemBbsByAdmin(ItemBbs item) {
-		boolean result = itemBbsService.CompleteItemBbsByAdmin(item);
+		boolean result = itemBbsService.CompleteItemBbs(item);
 		
 		if(result) {
 			JOptionPane.showMessageDialog(null, "완료상태로 변경 되었습니다.");
@@ -128,7 +128,7 @@ public class AdminController {
 	}
 	
 	public void CompleteAbilityBbsByAdmin(AbilityBbs ability) {
-		boolean result = abilityService.CompleteAbilityBbsByAdmin(ability);
+		boolean result = abilityService.CompleteAbilityBbs(ability);
 		
 		if(result) {
 			JOptionPane.showMessageDialog(null, "완료상태로 변경 되었습니다.");

@@ -33,8 +33,6 @@ public class RoomController {
 			list = new ArrayList<>();			
 		}
 		
-		System.out.println(room);
-		
         new Room(list, room);
 		
 	}

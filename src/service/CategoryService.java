@@ -12,4 +12,10 @@ public class CategoryService implements CategoryServiceImpl{
 	public List<Category> getAllCategories(int state){
 		return categoryDao.getAllCategories(state);
 	}
+
+	@Override
+	public Category getCategory(int seq) {
+		// TODO Auto-generated method stub
+		return categoryDao.getCategory(seq);
+	}
 }

@@ -8,8 +8,10 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,11 +36,9 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 	private JLabel titleLb, sellLb, detailtitleLb, cateLb, explanationLb;
 	private JButton completeBtn, continueBtn, chatBtn;
 
-	// String iconImgUrl = "/Users/parker/Desktop/img/icon/";
-	String iconImgUrl = "E:\\icon/";
-
 	Person person = null;
 	AbilityBbs ability = null;
+	String noImgUrl = "icon/noimg.png";
 
 	public AdminAbilityDetail(AbilityBbs ability, Person person) {
 
@@ -69,8 +69,10 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		scrollPane.setBackground(Color.black);
 		// scrollPane.add(detailPn);
 
+		Delegator delegator = Delegator.getInstance();
 		// headerlogo
-		ImageIcon headerimage = new ImageIcon(iconImgUrl + "headerlogo.png");
+		BufferedImage headerImg = delegator.getImage("icon/headerlogo.png");
+		ImageIcon headerimage = new ImageIcon(headerImg);
 		headerLogo = new JPanel() {
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
@@ -83,7 +85,6 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		headerLogo.addMouseListener(this);
 		headerPn.add(headerLogo);
 		
-		Delegator delegator = Delegator.getInstance();
 
 		if (delegator.getCurrent_user() == null) {
 			// loginBtn
@@ -116,12 +117,10 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 			logoutBtn.setFont(new Font("로그아웃", Font.BOLD, 12));
 			logoutBtn.setBackground(commonRedColor);
 			logoutBtn.setForeground(Color.white);
+			logoutBtn.addActionListener(this);
 			headerPn.add(logoutBtn);
 		}
 
-		headerPn.add(logoutBtn);
-		headerPn.add(loginBtn);
-		headerPn.add(signupBtn);
 
 		// 1050
 		// sidePn
@@ -131,17 +130,18 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		sidePn.setLayout(null);
 		sidePn.setBackground(sideC);
 
-		ImageIcon image = new ImageIcon(iconImgUrl + "logo.png");
+		BufferedImage logoImg = delegator.getImage("icon/logo.png");
+		ImageIcon logoIcon = new ImageIcon(logoImg);
 		logoPn = new JPanel() {
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
-				g.drawImage(image.getImage(), 0, 0, null);
+				g.drawImage(logoIcon.getImage(), 0, 0, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
 		logoPn.setBounds(40, 30, 300, 66);
-
+		
 		sidePn.add(logoPn);
 
 		// SearchText
@@ -151,7 +151,9 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		sidePn.add(searchTextF);
 
 		// searchBtn
-		searchBtn = new JButton(new ImageIcon(iconImgUrl + "search.png"));
+		BufferedImage searchImg = delegator.getImage("icon/search.png");
+		ImageIcon searchIcon = new ImageIcon(searchImg);
+		searchBtn = new JButton(searchIcon);
 		searchBtn.setBounds(300, 160, 40, 40);
 		searchBtn.setOpaque(false); // 투명하게
 		searchBtn.addActionListener((ActionEvent e)->{
@@ -217,70 +219,136 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		sellLb.setOpaque(false);
 
 		imagePannel.add(sellLb);
-		// itemImage
-		itemImagePn = new JPanel() {
-			ImageIcon itemImage = new ImageIcon(ability.getImgurl1());
+		
+		BufferedImage itemImage = delegator.getImage(ability.getImgurl1());
+		if (itemImage == null) {
+			itemImage = delegator.getImage(noImgUrl);
+		}
+		ImageIcon itemIcon = new ImageIcon(itemImage);
 
+		itemImagePn = new JPanel() {
 			public void paintComponent(Graphics g) {
-				g.drawImage(itemImage.getImage(), 0, 0, null);
+				g.drawImage(itemIcon.getImage(), 0, 0, 400, 400, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
-		itemImagePn.setBounds(10, 115, 400, 500);
+		itemImagePn.setBounds(10, 115, 400, 400);
+		itemImagePn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				delegator.abilityBbsController.ImageView(ability.getImgurl1());
+			}
+		});
 		imagePannel.add(itemImagePn);
 
 		// itemsub
 		subimagePn = new JPanel();
-		subimagePn.setLayout(new GridLayout(1, 4, 10, 5));
-		subimagePn.setBounds(10, 530, 400, 90);
+		subimagePn.setLayout(new GridLayout(1, 4));
+		subimagePn.setBounds(0, 550, 420, 100);
 		// subimagePn.setBackground(Color.PINK);
 
-		// 서브 이미지1
-		subimage1 = new JPanel() {
-			ImageIcon image1 = new ImageIcon(ability.getImgurl1());
+		int compX = subimagePn.getWidth() / 4;
+		int compY = subimagePn.getHeight();
 
+		// 서브 이미지1
+		BufferedImage subItemImg1 = delegator.getImage(ability.getImgurl1());
+		if (subItemImg1 == null) {
+			subItemImg1 = delegator.getImage(noImgUrl);
+		}
+		ImageIcon subItemIcon1 = new ImageIcon(subItemImg1);
+		subimage1 = new JPanel() {
 			public void paintComponent(Graphics g) {
-				g.drawImage(image1.getImage(), 0, 0, null);
+				g.drawImage(subItemIcon1.getImage(), 0, 0, compX, compY, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
+		subimage1.setBorder(new LineBorder(commonRedColor, 2));
+		subimage1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				String img = ability.getImgurl1();
+				delegator.abilityBbsController.ImageView(img);
+			}
+		});
 		subimagePn.add(subimage1);
 
 		// 서브이미지2
+		BufferedImage subItemImg2 = delegator.getImage(ability.getImgurl2());
+		if (subItemImg2 == null) {
+			subItemImg2 = delegator.getImage(noImgUrl);
+		}
+		ImageIcon subItemIcon2 = new ImageIcon(subItemImg2);
 		subimage2 = new JPanel() {
-			ImageIcon image2 = new ImageIcon(ability.getImgurl2());
-
 			public void paintComponent(Graphics g) {
-				g.drawImage(image2.getImage(), 0, 0, null);
+				g.drawImage(subItemIcon2.getImage(), 0, 0, compX, compY, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
+		subimage2.setBorder(new LineBorder(commonRedColor, 2));
+		
+		subimage2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				delegator.abilityBbsController.ImageView(ability.getImgurl2());
+			}
+		});
 		subimagePn.add(subimage2);
 		// 서브이미지3
-		subimage3 = new JPanel() {
-			ImageIcon image3 = new ImageIcon(ability.getImgurl3());
 
+		BufferedImage subItemImg3 = delegator.getImage(ability.getImgurl3());
+		if (subItemImg3 == null) {
+			subItemImg3 = delegator.getImage(noImgUrl);
+		}
+		ImageIcon subItemIcon3 = new ImageIcon(subItemImg3);
+		subimage3 = new JPanel() {
 			public void paintComponent(Graphics g) {
-				g.drawImage(image3.getImage(), 0, 0, null);
+				g.drawImage(subItemIcon3.getImage(), 0, 0, compX, compY, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
+		subimage3.setBorder(new LineBorder(commonRedColor, 2));
+		subimage3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				delegator.abilityBbsController.ImageView(ability.getImgurl3());
+			}
+		});
 		subimagePn.add(subimage3);
 
 		// 서브이미지4
+		BufferedImage subItemImg4 = delegator.getImage(ability.getImgurl4());
+		if (subItemImg4 == null) {
+			subItemImg4 = delegator.getImage(noImgUrl);
+		}
+		ImageIcon subItemIcon4 = new ImageIcon(subItemImg4);
 		subimage4 = new JPanel() {
-			ImageIcon image4 = new ImageIcon(ability.getImgurl4());
-
 			public void paintComponent(Graphics g) {
-				g.drawImage(image4.getImage(), 0, 0, null);
+				g.drawImage(subItemIcon4.getImage(), 0, 0, compX, compY, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
+		subimage4.setBorder(new LineBorder(commonRedColor, 2));
+		subimage4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				delegator.abilityBbsController.ImageView(ability.getImgurl4());
+			}
+		});
 		subimagePn.add(subimage4);
 
 		imagePannel.add(subimagePn);
@@ -290,7 +358,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 
 		iteminfoPn = new JPanel();
 		iteminfoPn.setLayout(null);
-		iteminfoPn.setBounds(580, 135, 340, 400);
+		iteminfoPn.setBounds(580, 100, 340, 400);
 		iteminfoPn.setBackground(Color.white);
 		iteminfoPn.setBorder(new LineBorder(Color.red, 2));
 
@@ -303,13 +371,10 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 		// Ability
 
 		String key = ability.getAbility();
-		System.out.println("key값 : " + key);
 		int rowSize = 0;
+
 		String[] keyarray;
-		keyarray = new String[rowSize * 3];
 		keyarray = key.split("-key-");
-		System.out.println("keyarray:" + keyarray[0]);
-		System.out.println("keyarraylength :" + keyarray.length);
 
 		if (keyarray.length % 3 == 0) {
 			rowSize = keyarray.length / 3;
@@ -319,7 +384,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 
 		JPanel keywordPanel = new JPanel();
 		keywordPanel.setLocation(10, 70);
-		keywordPanel.setSize(240, 30 * rowSize);
+		keywordPanel.setSize(240, 40);
 		keywordPanel.setBackground(Color.white);
 		keywordPanel.setLayout(null);
 
@@ -327,7 +392,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 
 		int k = 0;
 		for (int i = 0; i < rowSize; i++) {
-			for (int j = 0; j < keyarray.length; j++) {
+			for (int j = 0; j < 3; j++) {
 
 				keywordLabel[i][j] = new JLabel();
 				keywordLabel[i][j].setOpaque(true);
@@ -336,9 +401,12 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 				keywordLabel[i][j].setText("#" + keyarray[k]);
 				keywordLabel[i][j].setSize(70, 30);
 				keywordLabel[i][j].setLocation((j * 80), (i * 40));
-				System.out.println(keywordLabel[i][j].getBounds());
+
 				keywordPanel.add(keywordLabel[i][j]);
 				k++;
+				if (k == keyarray.length) {
+					break;
+				}
 			}
 		}
 
@@ -361,7 +429,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 
 		// chatBtn
 		backBtn = new JButton("뒤로 가기");
-		backBtn.setBounds(630, 540, 240, 35);
+		backBtn.setBounds(630, 505, 240, 35);
 		backBtn.setBorder(new LineBorder(commonRedColor));
 		backBtn.addActionListener(this);
 		detailPn.add(backBtn);
@@ -370,7 +438,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 
 		JLabel state = new JLabel();
 		state.setFont(new Font("state", Font.BOLD, 15));
-		state.setBounds(580, 100, 200, 15);
+		state.setBounds(580, 40, 200, 15);
 		detailPn.add(state);
 
 		if (ability.getState() == 0) {
@@ -378,13 +446,13 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 			state.setText("진행중");
 
 			completeBtn = new JButton("완료 상태로 변경");
-			completeBtn.setBounds(630, 585, 240, 35);
+			completeBtn.setBounds(630, 550, 240, 35);
 			completeBtn.setBorder(new LineBorder(commonRedColor));
 			completeBtn.addActionListener(this);
 			detailPn.add(completeBtn);
 
 			delBtn = new JButton("관리자 권한 삭제");
-			delBtn.setBounds(630, 630, 240, 35);
+			delBtn.setBounds(630, 595, 240, 35);
 			delBtn.setBorder(new LineBorder(commonRedColor));
 			delBtn.addActionListener(this);
 			detailPn.add(delBtn);
@@ -393,13 +461,13 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 			state.setText("완료됨 ");
 
 			continueBtn = new JButton("진행 상태로 변경");
-			continueBtn.setBounds(630, 585, 240, 35);
+			continueBtn.setBounds(630, 550, 240, 35);
 			continueBtn.setBorder(new LineBorder(commonRedColor));
 			continueBtn.addActionListener(this);
 			detailPn.add(continueBtn);
 
 			delBtn = new JButton("관리자 권한 삭제");
-			delBtn.setBounds(630, 630, 240, 35);
+			delBtn.setBounds(630, 595, 240, 35);
 			delBtn.setBorder(new LineBorder(commonRedColor));
 			delBtn.addActionListener(this);
 			detailPn.add(delBtn);
@@ -408,7 +476,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 			state.setText("삭제됨 ");
 
 			continueBtn = new JButton("진행 상태로 변경");
-			continueBtn.setBounds(630, 585, 240, 35);
+			continueBtn.setBounds(630, 550, 240, 35);
 			continueBtn.setBorder(new LineBorder(commonRedColor));
 			continueBtn.addActionListener(this);
 			detailPn.add(continueBtn);
@@ -418,7 +486,7 @@ public class AdminAbilityDetail extends JFrame implements ActionListener, MouseL
 			state.setText("관리자에 의해 삭제됨 ");
 
 			continueBtn = new JButton("진행 상태로 변경");
-			continueBtn.setBounds(630, 630, 240, 35);
+			continueBtn.setBounds(630, 550, 240, 35);
 			continueBtn.setBorder(new LineBorder(commonRedColor));
 			continueBtn.addActionListener(this);
 			detailPn.add(continueBtn);

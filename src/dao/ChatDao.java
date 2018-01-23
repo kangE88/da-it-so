@@ -13,59 +13,63 @@ import db.OracleConnection;
 import delegator.Delegator;
 import dto.ChatDto;
 
-public class ChatDao implements ChatDaoImpl{
-	DBConnection DBConnector = new OracleConnection();
-//	DBConnection DBConnector = new MySqlConnection();
+public class ChatDao implements ChatDaoImpl {
 
-    public List<ChatDto> getChatByRoomSeq(int seq){
-        String sql = "select * from chat where room_id="+seq+" order by seq";
+	public List<ChatDto> getChatByRoomSeq(int seq) {
+		String sql = "select * from chat where room_id=" + seq + " order by seq";
 
-        List<ChatDto> list = new ArrayList<>();
+		List<ChatDto> list = new ArrayList<>();
 
-        Connection conn = null;
-        PreparedStatement ptmt = null;
-        ResultSet rs = null;
+		Connection conn = null;
+		PreparedStatement ptmt = null;
+		ResultSet rs = null;
 
+		try {
+			conn = Delegator.getInstance().DBConnector.makeConnection();
+			ptmt = conn.prepareStatement(sql);
+			rs = ptmt.executeQuery();
 
-        try {
-            conn = DBConnector.makeConnection();
-            ptmt = conn.prepareStatement(sql);
-            rs = ptmt.executeQuery();
+			while (rs.next()) {
+				ChatDto dto = new ChatDto();
 
-            while(rs.next()){
-                ChatDto dto = new ChatDto();
+				dto.setContent(rs.getString("content"));
+				dto.setRoom_id(rs.getInt("room_id"));
+				dto.setSeq(rs.getInt("seq"));
+				dto.setUser_id(rs.getString("user_id"));
 
-                dto.setContent(rs.getString("content"));
-                dto.setRoom_id(rs.getInt("room_id"));
-                dto.setSeq(rs.getInt("seq"));
-                dto.setUser_id(rs.getString("user_id"));
+				list.add(dto);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 
-                list.add(dto);
-            }
-        } catch (SQLException ex){
-            ex.printStackTrace();
-        }
+		return list;
+	}
 
-        return list;
-    }
+	public boolean insert(ChatDto chat) {
+		String sql;
 
-    public boolean insert(ChatDto chat){
-        String sql = " insert into chat values " +
-        		" ( chat_seq.nextval, "+chat.getRoom_id()+", '"+chat.getUser_id()+"', '"+chat.getContent()+"', sysdate)";
+		if (Delegator.getInstance().DBConnector.getClass().getName().equals("db.MySqlConnection")) {
+			sql = " insert into chat(room_id, user_id, content, created_at) "
+					+ "values(" + chat.getRoom_id() + ", '"+ chat.getUser_id() + "', '" + chat.getContent() + "', now())";
+		} else {
+			sql = " insert into chat "
+				+ "values ( chat_seq.nextval, " + chat.getRoom_id() + ", '"
+				+ chat.getUser_id() + "', '" + chat.getContent() + "', sysdate)";
+		}
 
-        Connection conn = null;
-        PreparedStatement ptmt = null;
-        int count = -1;
+		Connection conn = null;
+		PreparedStatement ptmt = null;
+		int count = -1;
 
-        try {
-            conn = DBConnector.makeConnection();
-            ptmt = conn.prepareStatement(sql);
-            count = ptmt.executeUpdate();
+		try {
+			conn = Delegator.getInstance().DBConnector.makeConnection();
+			ptmt = conn.prepareStatement(sql);
+			count = ptmt.executeUpdate();
 
-
-        } catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        return count > 0 ? true : false;
-    }
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return count > 0 ? true : false;
+	}
 }

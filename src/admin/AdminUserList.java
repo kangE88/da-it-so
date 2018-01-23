@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -36,9 +37,6 @@ public class AdminUserList extends JFrame implements ActionListener {
 
 	int itemHeight = 80;
 
-	// String icomImgimgUrl = "/Users/parker/Desktop/img/icon/";
-	String icomImgimgUrl = "E:\\icon/";
-
 	public AdminUserList(List<Person> userList) {
 
 		this.userList = userList;
@@ -47,10 +45,12 @@ public class AdminUserList extends JFrame implements ActionListener {
 		contentPane.setBounds(0, 0, 1680, 1050);
 		contentPane.setBackground(Color.white);
 
+		Delegator delegator = Delegator.getInstance();
+		
 		// header
+		BufferedImage headerImg = delegator.getImage("icon/headerlogo.png");
+		ImageIcon headerimage = new ImageIcon(headerImg);
 		headerLogo = new JPanel() {
-			ImageIcon headerimage = new ImageIcon(icomImgimgUrl + "headerlogo.png");
-
 			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
 				g.drawImage(headerimage.getImage(), 0, 0, null);
@@ -58,19 +58,28 @@ public class AdminUserList extends JFrame implements ActionListener {
 				super.paintComponents(g);
 			}
 		};
+		headerLogo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Delegator delegator = Delegator.getInstance();
+				delegator.mainController.Main();
+				dispose();
+			}
+
+		});
 
 		// logo
+		BufferedImage logoImg = delegator.getImage("icon/logo.png");
+		ImageIcon logoIcon = new ImageIcon(logoImg);
 		JPanel logoPn = new JPanel() {
-			ImageIcon image = new ImageIcon(icomImgimgUrl + "logo.png");
 
-			// 사이즈맞게 배경삽임
 			public void paintComponent(Graphics g) {
-				g.drawImage(image.getImage(), 0, 0, null);
+				g.drawImage(logoIcon.getImage(), 0, 0, null);
 				setOpaque(false);
 				super.paintComponents(g);
 			}
 		};
-
 		// Header
 		Color commonRedColor = new Color(218, 0, 0);
 		JPanel headerPn = new JPanel();
@@ -81,8 +90,6 @@ public class AdminUserList extends JFrame implements ActionListener {
 		// headerlogo
 		headerLogo.setBounds(15, 25, 71, 15);
 		headerPn.add(headerLogo);
-
-		Delegator delegator = Delegator.getInstance();
 
 		if (delegator.getCurrent_user() == null) {
 			// loginBtn
@@ -115,6 +122,7 @@ public class AdminUserList extends JFrame implements ActionListener {
 			logoutBtn.setFont(new Font("로그아웃", Font.BOLD, 12));
 			logoutBtn.setBackground(commonRedColor);
 			logoutBtn.setForeground(Color.white);
+			logoutBtn.addActionListener(this);
 			headerPn.add(logoutBtn);
 		}
 
@@ -136,7 +144,9 @@ public class AdminUserList extends JFrame implements ActionListener {
 		sidePn.add(searchTextF);
 
 		// searchBtn
-		searchBtn = new JButton(new ImageIcon(icomImgimgUrl + "search.png"));
+		BufferedImage searchImg = delegator.getImage("icon/search.png");
+		ImageIcon searchIcon = new ImageIcon(searchImg);
+		searchBtn = new JButton(searchIcon);
 		searchBtn.setBounds(300, 160, 40, 40);
 		searchBtn.setOpaque(false); // 투명하게
 		searchBtn.setContentAreaFilled(false);// 내용영역 채우기x
@@ -247,6 +257,15 @@ public class AdminUserList extends JFrame implements ActionListener {
 			this.dispose();
 		} else if (obj == chatBtn) {
 			delegator.roomController.RoomList();
+		} else if (obj == loginBtn) {
+			delegator.personController.Login();
+			this.dispose();
+		} else if (obj == logoutBtn) {
+			delegator.personController.Logout();
+			this.dispose();
+		} else if (obj == signupBtn) {
+			delegator.personController.SignUp();
+			this.dispose();
 		}
 	}
 

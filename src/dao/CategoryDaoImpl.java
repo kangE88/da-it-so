@@ -8,4 +8,5 @@ import dto.ItemBbs;
 
 public interface CategoryDaoImpl {
 	public List<Category> getAllCategories(int state);
+	public Category getCategory(int seq) ;
 }
